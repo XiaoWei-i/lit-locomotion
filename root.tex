@@ -1,0 +1,98 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%2345678901234567890123456789012345678901234567890123456789012345678901234567890
+%        1         2         3         4         5         6         7         8
+
+\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out if you need a4paper
+
+%\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4 paper
+
+\IEEEoverridecommandlockouts                              % This command is only needed if 
+                                                          % you want to use the \thanks command
+
+\overrideIEEEmargins                                      % Needed to meet printer requirements.
+
+%In case you encounter the following error:
+%Error 1010 The PDF file may be corrupt (unable to open PDF file) OR
+%Error 1000 An error occurred while parsing a contents stream. Unable to analyze the PDF file.
+%This is a known problem with pdfLaTeX conversion filter. The file cannot be opened with acrobat reader
+%Please use one of the alternatives below to circumvent this error by uncommenting one or the other
+%\pdfobjcompresslevel=0
+\pdfminorversion=4
+
+% See the \addtolength command later in the file to balance the column lengths
+% on the last page of the document
+
+% The following packages can be found on http:\\www.ctan.org
+\usepackage{graphics} % for pdf, bitmapped graphics files
+\usepackage{epsfig} % for postscript graphics files
+\usepackage{mathptmx} % assumes new font selection scheme installed
+\usepackage{times} % assumes new font selection scheme installed
+\usepackage{amsmath} % assumes amsmath package installed
+\usepackage{amssymb}  % assumes amsmath package installed
+%\usepackage{natbib}
+
+\usepackage{multirow} 
+\usepackage{booktabs} 
+\usepackage{makecell}
+\usepackage[T1]{fontenc}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{LightRed}{rgb}{1.0, 0.6, 0.6}
+\definecolor{LightBlue}{rgb}{0.68, 0.85, 0.9}
+\usepackage{svg}
+
+\title{\LARGE \bf
+Learning Robotic Policy with Imagined Transition: Mitigating the Trade-off between Robustness and Optimality
+}
+
+% \author{Wei Xiao$^{1}$, Shangke Lyu$^{2}$$^{\dagger}$, Zhefei Gong$^{1}$, Renjie Wang$^{1}$, Donglin Wang$^{1}$$^{\dagger}$% <-this % stops a space
+% \thanks{$^{\dagger}$Corresponding author.}
+% \thanks{$^{1}$Westlake University, $^{2}$Nanjing University.}
+% }
+
+
+\begin{document}
+
+
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+\input{section/0_abs}
+
+\end{abstract}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{INTRODUCTION}
+\input{section/1_intro}
+
+\section{Related Work}
+\input{section/2_related_work}
+
+\section{Preliminary}
+\input{section/3_preliminary}
+
+\section{Method}
+\input{section/4_method}
+
+\section{Experiments}
+\input{section/5_experiment}
+
+\section{Conclusion}
+\input{section/6_conclusion}
+
+% \section*{ACKNOWLEDGMENT}
+% This work was supported by the National Science and Technology Innovation 2030-Major Projects (Grant No. 2022ZD0208800) and the National Natural Science Foundation of China (Grant No. 62176215 and 62003018).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{./IEEEtran}
+\bibliography{references}
+
+\addtolength{\textheight}{-12cm} 
+
+\end{document}
