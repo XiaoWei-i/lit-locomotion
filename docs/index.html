@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>LIT — Learning Robotic Policy with Imagined Transition | CASE 2026</title>
+  <meta name="description" content="LIT mitigates the robustness–optimality trade-off in quadruped RL via imagined transitions from an ideal policy and dynamics model, with uncertainty-based adjustment." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="top-bar">
+    <div class="top-bar-inner wrap">
+      <a class="brand" href="#" aria-current="page"><span class="brand-mark">LIT</span><span class="brand-sub">CASE&nbsp;2026</span></a>
+      <nav class="top-nav" aria-label="Page sections">
+        <a href="#video">Video</a>
+        <a href="#abstract">Abstract</a>
+        <a href="#motivation">Motivation</a>
+        <a href="#method">Method</a>
+        <a href="#results">Results</a>
+        <a href="#paper">Paper</a>
+      </nav>
+    </div>
+  </header>
+
+  <header class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <span class="badge">IEEE CASE 2026</span>
+      <h1>Learning Robotic Policy with <span class="title-accent">Imagined Transition</span></h1>
+      <p class="subtitle">Mitigating the trade-off between robustness and optimality in quadruped RL</p>
+      <p class="authors">
+        Wei Xiao<sup>1</sup>, Shangke Lyu<sup>2†</sup>, Zhefei Gong<sup>1</sup>, Renjie Wang<sup>1</sup>, Donglin Wang<sup>1</sup>
+      </p>
+      <p class="affil"><sup>1</sup>Westlake University &nbsp;·&nbsp; <sup>2</sup>Nanjing University &nbsp;·&nbsp; <sup>†</sup>Corresponding author</p>
+      <div class="btn-row">
+        <a class="btn primary" href="assets/pdf/paper.pdf">Paper (PDF)</a>
+        <a class="btn" href="#video">Watch video</a>
+        <a class="btn" href="#bibtex">BibTeX</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <section id="video" class="section-card">
+      <h2>Video</h2>
+      <div class="video-wrapper">
+        <iframe
+          title="LIT demonstration video on Bilibili"
+          src="https://player.bilibili.com/player.html?bvid=BV1wbQDYmENv&page=1&high_quality=1&danmaku=0"
+          allowfullscreen
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        ></iframe>
+      </div>
+      <p class="video-fallback">
+        If the embed does not load, open the video on
+        <a href="https://www.bilibili.com/video/BV1wbQDYmENv/" target="_blank" rel="noopener">Bilibili</a>.
+      </p>
+      <p>
+        The video demonstrates LIT in simulation and real-world deployment, including payload shifts,
+        external disturbances, and uneven outdoor terrain.
+      </p>
+    </section>
+
+    <section id="abstract" class="section-card">
+      <h2>Abstract</h2>
+      <div class="abstract-box">
+        <p>
+          Domain randomization improves sim-to-real robustness for quadrupedal locomotion, but it can also
+          sacrifice optimality and lead to conservative behaviors. We propose <strong>LIT</strong> (Learning with
+          Imagined Transition), a two-stage reinforcement learning framework that introduces explicit motion
+          references into robust policy learning. An ideal policy and a dynamics model are first trained in a
+          non-perturbative simulator to generate reference actions and imagined next observations. These
+          <em>imagined transitions</em> guide the robust policy under domain randomization, while an
+          uncertainty-based adjustment reduces the influence of unreliable model predictions. Experiments in
+          simulation and on a real Unitree A1 show that LIT improves training efficiency, velocity tracking, and
+          robustness under unseen disturbances.
+        </p>
+      </div>
+    </section>
+
+    <section id="motivation" class="section-card">
+      <h2>Motivation</h2>
+      <p>
+        Robust quadrupedal locomotion policies are commonly trained with extensive domain randomization.
+        Although this improves robustness, the learned policy may become overly conservative under nominal or
+        mildly disturbed conditions. LIT addresses this issue by providing explicit reference motions, allowing
+        the policy to preserve desired behavior while adapting to disturbances.
+      </p>
+      <div class="figure">
+        <img
+          src="assets/images/intro.png"
+          alt="Fig. 1: LIT vs baseline tracking error in real world and simulation"
+          width="900"
+          loading="lazy"
+        />
+        <p class="caption">
+          Fig. 1. Proposed LIT has lower tracking error than the baseline. For conventional RL locomotion with
+          domain randomization, robustness trades off optimality.
+          <a href="assets/pdf/intro.pdf" class="caption-link">Vector PDF</a>
+        </p>
+      </div>
+    </section>
+
+    <section id="method" class="section-card">
+      <h2>Method</h2>
+      <p>
+        LIT consists of two stages. First, we train an <strong>ideal policy</strong> in a fixed, non-randomized
+        simulator and learn a <strong>dynamics model</strong> that predicts the next observation distribution.
+        The ideal policy provides reference actions, while the dynamics model provides imagined next
+        observations. Second, during robust policy learning under domain randomization, the policy receives the
+        current observation, the reference action, and the imagined next observation as an
+        <strong>imagined transition</strong>. To handle out-of-distribution states, the predicted observation is
+        adjusted according to model uncertainty (e.g., down-weighting unreliable means when variance is high),
+        reducing the effect of unreliable predictions.
+      </p>
+      <div class="figure">
+        <img
+          src="assets/images/framework-min.png"
+          alt="Fig. 2: LIT framework — motion reference, imagined transition, and model architectures"
+          width="900"
+          loading="lazy"
+        />
+        <p class="caption">
+          Fig. 2. Framework overview. Left: motion reference learning in fixed dynamics. Middle:
+          policy learning with imagined transition. Right: actor and dynamics model architectures.
+          <a href="assets/pdf/framework.pdf" class="caption-link">Vector PDF</a>
+        </p>
+      </div>
+    </section>
+
+    <section id="results" class="section-card">
+      <h2>Results</h2>
+
+      <h3 class="results-h3"><span class="num">1</span> Command tracking (simulation)</h3>
+      <p>
+        LIT achieves lower linear and angular velocity tracking errors than the baseline across most simulated
+        terrains, including smooth slopes, rough slopes, stairs, and discrete terrains.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Terrain</th>
+              <th>Velocity</th>
+              <th>Baseline</th>
+              <th>Ours</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td rowspan="2">Smooth slopes</td><td>Linear</td><td>0.170</td><td><strong>0.120</strong></td></tr>
+            <tr><td>Angular</td><td>0.101</td><td><strong>0.099</strong></td></tr>
+            <tr><td rowspan="2">Rough slopes</td><td>Linear</td><td>0.387</td><td><strong>0.162</strong></td></tr>
+            <tr><td>Angular</td><td>0.164</td><td><strong>0.130</strong></td></tr>
+            <tr><td rowspan="2">Stairs</td><td>Linear</td><td>2.371</td><td><strong>0.992</strong></td></tr>
+            <tr><td>Angular</td><td><strong>0.515</strong></td><td>0.552</td></tr>
+            <tr><td rowspan="2">Discrete</td><td>Linear</td><td>1.955</td><td><strong>0.120</strong></td></tr>
+            <tr><td>Angular</td><td>0.220</td><td><strong>0.099</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="caption">Table I. Average tracking error in simulator over 1000 trials (same metrics as the paper).</p>
+
+      <h3 class="results-h3"><span class="num">2</span> Robustness: payload and push</h3>
+      <p>
+        Under unseen payload shifts and external push disturbances, LIT achieves higher survival rates than the
+        baseline. The gains become more pronounced as the disturbance magnitude increases.
+      </p>
+      <div class="grid-robust">
+        <div class="card robust-left">
+          <div class="figure" style="margin:0">
+            <img
+              src="assets/images/payload.png"
+              alt="Fig. 5: Success rate under various payloads"
+              width="900"
+              loading="lazy"
+            />
+            <p class="caption">
+              Fig. 5. Success rate under various payloads.
+              <a href="assets/pdf/payload.pdf" class="caption-link">Vector PDF</a>
+            </p>
+          </div>
+        </div>
+        <div class="robust-right">
+          <div class="card">
+            <div class="figure" style="margin:0">
+              <img
+                src="assets/images/push_bar.png"
+                alt="Fig. 6: Survival rate under external pushing"
+                width="900"
+                loading="lazy"
+              />
+              <p class="caption">
+                Fig. 6. Survival rate under external pushing.
+                <a href="assets/pdf/push_bar.pdf" class="caption-link">Vector PDF</a>
+              </p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="figure" style="margin:0">
+              <img
+                src="assets/images/push.png"
+                alt="Fig. 7: Fall-resistant visualization with external push directions"
+                width="900"
+                loading="lazy"
+              />
+              <p class="caption">
+                Fig. 7. Fall-resistant visualization with external push.
+                <a href="assets/pdf/push.pdf" class="caption-link">Vector PDF</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="results-h3"><span class="num">3</span> Real-world deployment</h3>
+      <p>
+        We deploy LIT on a Unitree A1 robot across five real-world scenarios: flat ground, payload, two external
+        disturbance settings, and lawn terrain. LIT achieves lower linear velocity tracking errors than the
+        baseline in all scenarios.
+      </p>
+      <div class="figure">
+        <img src="assets/images/realworld.png" alt="Real-world deployment scenarios" width="900" loading="lazy" />
+        <p class="caption">
+          Fig. 3. Deployment on real hardware (five scenarios). Raster image from the paper; for print quality see the camera-ready PDF.
+        </p>
+      </div>
+      <div class="figure">
+        <img
+          src="assets/images/realworld_bar.png"
+          alt="Fig. 8: Real-world linear velocity tracking error, mean ± s.e., ten trials"
+          width="900"
+          loading="lazy"
+        />
+        <p class="caption">
+          Fig. 8. Real-world linear velocity tracking error (mean ± s.e., ten trials).
+          <a href="assets/pdf/realworld_bar.pdf" class="caption-link">Vector PDF</a>
+        </p>
+      </div>
+
+      <h3 class="results-h3"><span class="num">4</span> Learning curves</h3>
+      <p>
+        During training, LIT consistently improves normalized velocity tracking scores and terrain progression.
+        The residual-action variant learns quickly at the beginning but later becomes unstable, highlighting the
+        importance of uncertainty-aware adjustment.
+      </p>
+      <div class="figure">
+        <img
+          src="assets/images/curve.png"
+          alt="Fig. 4: Ablation learning curves for normalized tracking scores and terrain level"
+          width="900"
+          loading="lazy"
+        />
+        <p class="caption">
+          Fig. 4. Ablation studies with learning curves (normalized tracking scores and terrain level).
+          <a href="assets/pdf/curve.pdf" class="caption-link">Vector PDF</a>
+        </p>
+      </div>
+    </section>
+
+    <section id="paper" class="section-card section-paper">
+      <h2>Paper &amp; citation</h2>
+      <p class="paper-lead">
+        Download the camera-ready PDF:
+        <a class="inline-link" href="assets/pdf/paper.pdf">paper.pdf</a>.
+        arXiv preprint:
+        <a class="inline-link" href="https://arxiv.org/abs/2503.10484" target="_blank" rel="noopener">2503.10484</a>.
+        The BibTeX below cites the arXiv version; replace with the IEEE proceedings entry once you prefer that citation.
+      </p>
+      <h3 id="bibtex">BibTeX</h3>
+      <div class="bib-wrap">
+        <button type="button" class="btn-copy" id="copy-bib" aria-label="Copy BibTeX to clipboard">Copy</button>
+        <pre class="bib" id="bib-pre">@misc{xiao2025lit,
+  title         = {Learning Robotic Policy with Imagined Transition: Mitigating the Trade-off between Robustness and Optimality},
+  author        = {Xiao, Wei and Lyu, Shangke and Gong, Zhefei and Wang, Renjie and Wang, Donglin},
+  year          = {2025},
+  eprint        = {2503.10484},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.RO},
+  url           = {https://arxiv.org/abs/2503.10484}
+}</pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site">
+    <div class="wrap footer-inner">
+      <p class="footer-title">Learning with Imagined Transition · CASE 2026</p>
+      <p class="footer-meta">Static site in <code>docs/</code>. Deploy with GitHub Pages from the <code>/docs</code> folder on your default branch.</p>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      var btn = document.getElementById("copy-bib");
+      var pre = document.getElementById("bib-pre");
+      if (!btn || !pre || !navigator.clipboard) return;
+      btn.addEventListener("click", function () {
+        navigator.clipboard.writeText(pre.textContent.trim()).then(function () {
+          var t = btn.textContent;
+          btn.textContent = "Copied";
+          setTimeout(function () { btn.textContent = t; }, 1600);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
