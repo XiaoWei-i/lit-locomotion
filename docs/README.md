@@ -25,11 +25,19 @@ cd docs && python3 -m http.server 8080
 
 Then open `http://localhost:8080/`.
 
+The page shares its document typography and layout with Wei Xiao's homepage. It loads these published assets using absolute URLs:
+
+- `https://xiaowei-i.github.io/assets/css/project.css`
+- `https://xiaowei-i.github.io/assets/js/project.js`
+
+Their source files live in the `XiaoWei-i.github.io` repository. Deploy changes to those shared assets before publishing this project page. The standalone preview server uses the published versions, so it needs network access; use a combined preview server to review unpublished changes to the shared stylesheet or script. Links back to the homepage and PORL use their production URLs.
+
 ## Assets
 
 - `assets/pdf/paper.pdf` — camera-ready PDF (copied from your local build; replace when updated).
 - `assets/pdf/*.pdf` — optional vector exports for figures; the page shows **PNG** images in `assets/images/` (no inline PDF viewer).
 - `assets/images/` — figures exported for the web (PNG).
+- The old `assets/css/style.css` remains in the repository but is no longer loaded by the page.
 
 ## Video
 
